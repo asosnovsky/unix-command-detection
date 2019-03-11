@@ -179,18 +179,20 @@ for text in all_paths:
     otext, op_paths = path_obtuse_full(text, op_paths)
     mapping[text] = otext
 
-def cmd_obtusal(cmd: str, cmd_obtusals: List[str] = []):
-    text, cmd_obtusal = path_obtuse(cmd, cmd_obtusals)
-    return f'//{text}'
-
-def apply_obts(row: pd.Series) -> pd.DataFrame:
+def apply_obts(row: pd.Series, op_paths: ObtuseMapping = op_paths)  -> pd.DataFrame:
     row.end_path = mapping[row.end_path]
     row.start_path = mapping[row.start_path]
     if row.token_type == TokenType.Path:
         if row.token_text in mapping.keys():
             row.token_text = mapping[row.token_text]
         else:
-            row.token_text = cmd_obtusal(row.token_text)
+            if row.token_text.startswith('/') or row.token_text.startswith('~'):
+                otext, op_paths = path_obtuse_full(row.token_text, op_paths)
+                mapping[row.token_text] = otext
+            else:
+                text = os.path.join(row.start_path, row.token_text)
+                otext, op_paths = path_obtuse_full(text, op_paths)
+            row.token_text = otext
     return row
 
 # apply obstruction to all paths
