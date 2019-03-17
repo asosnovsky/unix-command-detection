@@ -32,20 +32,32 @@ def parse_token_sequence(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-
+# Read data
 data = pd.read_pickle("./data/02_bin/00_dataset.bin")
-data = data.assign(
-    line_id = 0,
-    token_type = lambda x: x.token.apply(token_type)
-)
 
-data = data.groupby(['user', 'sess_id']).apply(parse_token_sequence)
+# Remove sessions with multi-token lines
+bad_lines = data.loc[data.is_multi_line].sess_id.unique()
+data = data.loc[
+    ~data.sess_id.isin(bad_lines)
+]
+assert (data.token.str.split(' ').apply(len) > 1).any() == False
 
-user_data = data.groupby(['user', 'sess_id', 'line_id']).apply(
+# Tokenize
+data = data.\
+    assign(
+        line_id = 0,
+        token_type = lambda x: x.token.apply(token_type)
+    ).\
+    groupby(['user', 'sess_id']).\
+    apply(parse_token_sequence)
+
+# Join lines
+lines = data.groupby(['user', 'sess_id', 'line_id']).apply(
     lambda g: " ".join(g.token)
-)
+).reset_index()
 
-user_data.to_pickle("./data/02_bin/01_lines.bin")
+data.to_pickle("./data/02_bin/01_tokens.bin")
+lines.to_pickle("./data/02_bin/01_lines.bin")
 
 
 
