@@ -54,7 +54,7 @@ data = data.\
 # Join lines
 lines = data.groupby(['user', 'sess_id', 'line_id']).apply(
     lambda g: " ".join(g.token)
-).reset_index()
+).to_frame("line_text").reset_index()
 
 data.to_pickle("./data/02_bin/01_tokens.bin")
 lines.to_pickle("./data/02_bin/01_lines.bin")
