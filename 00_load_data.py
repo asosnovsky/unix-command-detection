@@ -5,7 +5,7 @@ from tqdm import tqdm
 START = "**SOF**"
 END = "**EOF**"
 INPUT_FOLDER= "./data/01_txt"
-SAVE_FOLDER = "./data/02_feathers"
+SAVE_FOLDER = "./data/02_bin"
 
 data = []
 file_names = os.listdir(INPUT_FOLDER)
@@ -20,25 +20,25 @@ with tqdm(total=len(file_names)) as waiter:
 
 			if user in ["USER1","USER0"]:
 				user = "USER1+0"
-			for line in f:
-				line = line.strip()
-				if line == START:
+			for token in f:
+				token = token.strip()
+				if token == START:
 					if curr_line is None:
 						curr_line = []
 					else:
 						raise Exception("curr_line not null")
-				elif line == END:
+				elif token == END:
 					data = [*data, *curr_line]
 					curr_line = None
+					sess_id += 1
 				else:
 					curr_line.append({
 						"user": user,
 						"sess_id": sess_id,
-						"line": line,	
+						"token": token,	
 					})
-					sess_id += 1
 
 		waiter.update()
 
 data = pd.DataFrame(data)
-data.to_feather(f"{SAVE_FOLDER}/00_dataset.feather")
+data.to_pickle(f"{SAVE_FOLDER}/00_dataset.bin")

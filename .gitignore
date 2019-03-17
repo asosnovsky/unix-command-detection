@@ -1,3 +1,7 @@
 *.gz
 extracted/*.txt
 **__pycache__**
+_*.py
+.mypy*
+.vscode
+data/00_raw/*.txt
