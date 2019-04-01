@@ -2,4 +2,4 @@
 
 This repo is a part of a delivarable.
 
-Please find the pptx presentation [here](https://docs.google.com/presentation/d/1Ga-Uuvz5auNM0rCUc3bUDFdTHvqY8brI53S0SBYZUU8/edit?usp=sharing), and the Jupyter Notebook [here](./Model Training.ipynb)
+Please find the pptx presentation [here](https://docs.google.com/presentation/d/1Ga-Uuvz5auNM0rCUc3bUDFdTHvqY8brI53S0SBYZUU8/edit?usp=sharing), and the Jupyter Notebook [here](https://github.com/asosnovsky/unix-command-detection/blob/uci-dataset/Model%20Training.ipynb).
